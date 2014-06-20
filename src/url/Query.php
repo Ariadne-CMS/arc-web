@@ -20,7 +20,7 @@
 	 *	Usage:
 	 *	
 	 */
-   	class Query extends \ArrayObject implements \arc\KeyValueStoreInterface, QueryInterface {
+   	class Query extends \ArrayObject implements QueryInterface {
 
    		public function __construct( $query = '' ) {
 			parent::__construct( $this->parse( $query ), \ArrayObject::ARRAY_AS_PROPS );
