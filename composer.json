@@ -1,6 +1,5 @@
 {
 	"name": "arc/web",
-	"version": "1.0",
 	"type": "library",
 	"description": "Ariadne Component Library: Web Components",
 	"keywords": ["component","components"],
