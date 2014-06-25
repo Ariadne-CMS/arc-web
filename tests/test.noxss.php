@@ -10,18 +10,19 @@
      */
 
     require_once( __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php' );
-     
-    class TestNoXSS extends UnitTestCase {
 
-        function testDetectPrevent() {
-        	$caught = false;
-        	$_GET['unsafe'] = "This is ' unsafe";
-        	\arc\noxss::detect();
-        	echo $_GET['unsafe'];
-       		\arc\noxss::prevent( function() use ( &$caught ) {
+    class TestNoXSS extends UnitTestCase
+    {
+        function testDetectPrevent()
+        {
+            $caught = false;
+            $_GET['unsafe'] = "This is ' unsafe";
+            \arc\noxss::detect();
+            echo $_GET['unsafe'];
+               \arc\noxss::prevent( function () use (&$caught) {
                 $caught = true;
             } );
-        	$this->assertTrue( $caught );
+            $this->assertTrue( $caught );
         }
 
     }

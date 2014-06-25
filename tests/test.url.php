@@ -7,15 +7,15 @@
      *
      * For the full copyright and license information, please view the LICENSE
      * file that was distributed with this source code.
-      
 
      */
 
     require_once( __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php' );
-     
-    class TestUrl extends UnitTestCase {
 
-        function testSafeUrl() {
+    class TestUrl extends UnitTestCase
+    {
+        function testSafeUrl()
+        {
             $starturl = 'http://www.ariadne-cms.org/?frop=1';
             $url = \arc\url::safeUrl($starturl);
             $this->assertIsA($url, '\arc\url\Url');
@@ -38,7 +38,8 @@
             $this->assertEqual($url->query[0], 'some thing');
         }
 
-        function testparseUrl() {
+        function testparseUrl()
+        {
             $starturl = 'http://www.ariadne-cms.org/?frop=1';
             $url = \arc\url::url($starturl);
             $this->assertIsA($url, '\arc\url\Url');
@@ -55,16 +56,18 @@
             $this->assertEqual($url.'', $starturl);
             $this->assertEqual($url->query['foo'], 'some thing');
 
-        } 
+        }
 
-        function testParseAuthority() {
+        function testParseAuthority()
+        {
             $starturl = 'http://foo:bar@www.ariadne-cms.org:80/';
             $url = \arc\url::url($starturl);
             $this->assertIsA($url, '\arc\url\Url');
             $this->assertEqual($url.'', $starturl);
         }
 
-        function testParseCommonURLS() {
+        function testParseCommonURLS()
+        {
             $commonUrls = [
                 'ftp://ftp.is.co.za/rfc/rfc1808.txt',
                 'http://www.ietf.org/rfc/rfc2396.txt',
@@ -78,10 +81,10 @@
                 '../../relative/',
                 'file:///C:/'
             ];
-            foreach ( $commonUrls as $sourceUrl ) {
+            foreach ($commonUrls as $sourceUrl) {
                 $url =\arc\url::safeUrl( $sourceUrl );
                 $this->assertEqual( ''.$url, $sourceUrl );
             }
         }
-        
+
     }
