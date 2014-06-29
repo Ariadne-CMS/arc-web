@@ -115,7 +115,11 @@ class ClientStream implements ClientInterface
             $this->options['headers'] = array();
         }
         if (!is_array($headers)) {
-            $this->headers = explode("\r\n", $headers);
+            $headers = explode("\r\n", $headers);
+            if (end($headers) == '') {
+                array_pop($headers);
+            }
+
         }
 
         $this->options['headers'] = array_merge($this->options['headers'], $headers);
