@@ -35,5 +35,4 @@ class url
     {
         return new url\Url( $url, new url\Query() );
     }
-
 }

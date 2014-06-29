@@ -44,5 +44,4 @@ class http
     {
         return self::request( 'DELETE', $url, $query, $options);
     }
-
 }
