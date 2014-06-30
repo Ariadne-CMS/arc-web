@@ -27,15 +27,15 @@ namespace arc\url;
  */
 class PHPQuery extends Query
 {
-	protected function compile($values)
-	{
-		return http_build_query( $values );
-	}
+    protected function compile($values)
+    {
+        return http_build_query( $values );
+    }
 
-	protected function parseQueryString($queryString)
-	{
-		parse_str( $queryString, $values );
+    protected function parseQueryString($queryString)
+    {
+        parse_str( $queryString, $values );
 
-		return $values;
-	}
+        return $values;
+    }
 }
