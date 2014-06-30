@@ -49,18 +49,18 @@ class Url
     public function __toString()
     {
         switch ($this->scheme) {
-        case 'file':
-            return $this->getScheme() . '//' . $this->host . $this->getFilePath();
+            case 'file':
+                return $this->getScheme() . '//' . $this->host . $this->getFilePath();
             break;
-        case 'mailto':
-        case 'news':
-            return ( $this->path ? $this->getScheme() . $this->getPath() : '' );
+            case 'mailto':
+            case 'news':
+                return ( $this->path ? $this->getScheme() . $this->getPath() : '' );
             break;
-        case 'ldap':
-            return $this->getSchemeAndAuthority() . $this->getPath() . $this->getLdapQuery();
+            case 'ldap':
+                return $this->getSchemeAndAuthority() . $this->getPath() . $this->getLdapQuery();
             break;
-        default:
-            return $this->getSchemeAndAuthority() . $this->getPath() . $this->getQuery() . $this->getFragment();
+            default:
+                return $this->getSchemeAndAuthority() . $this->getPath() . $this->getQuery() . $this->getFragment();
             break;
         }
     }
@@ -68,11 +68,11 @@ class Url
     public function __get($name)
     {
         switch ( (string) $name ) {
-        case 'password':
-            return $this->pass;
+            case 'password':
+                return $this->pass;
             break;
-        case 'query':
-            return $this->query;
+            case 'query':
+                return $this->query;
             break;
         }
     }
@@ -80,15 +80,15 @@ class Url
     public function __set($name, $value)
     {
         switch ( (string) $name ) {
-        case 'password':
-            $this->pass = $value;
+            case 'password':
+                $this->pass = $value;
             break;
-        case 'query':
-            if( is_object( $this->query )) {
-                $this->query->reset()->import( $value );
-            } else {
-                $this->query = $value;
-            }
+            case 'query':
+                if( is_object( $this->query )) {
+                    $this->query->reset()->import( $value );
+                } else {
+                    $this->query = $value;
+                }
             break;
         }
     }
