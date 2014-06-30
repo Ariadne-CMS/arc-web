@@ -60,17 +60,17 @@ class noxss
     public static function detect()
     {
         foreach ([ 'GET' => $_GET, 'POST' => $_POST, 'COOKIE' => $_COOKIE ] as $method => $inputs) {
-            if ( is_array( $inputs ) ) {
+            if (is_array( $inputs )) {
                 self::_gatherXSSInput( $inputs, $method );
             }
         }
         foreach (self::$xssHeaders as $header) {
-            if ( array_key_exists( $header, $_SERVER ) ) {
+            if (array_key_exists( $header, $_SERVER )) {
                 self::_gatherXSSInput( $_SERVER[$header], 'SERVER' );
             }
         }
 
-        if ( !self::$potentialXSS && count( self::$xss ) ) {
+        if (!self::$potentialXSS && count( self::$xss )) {
             // An input with problematic tokens has been spotted, start the output buffer once
             // to check the output for an occurance of that input _unchanged_
             ob_start();
@@ -80,9 +80,9 @@ class noxss
 
     private static function _gatherXSSInput($input, $method, $name = null)
     {
-        if ( is_array( $input ) ) {
+        if (is_array( $input )) {
             foreach ($input as $key => $value) {
-                if ( !isset($name) ) {
+                if (!isset($name)) {
                     self::_gatherXSSInput( $value, $method, $key );
                 } else {
                     self::_gatherXSSInput( $value, $method, $name );
@@ -90,9 +90,9 @@ class noxss
             }
         } else {
             $input = (string) $input;
-            if ( ( !array_key_exists( $method, self::$ignoreList ) || !array_key_exists( $name, self::$ignoreList[$method] ) )
+            if (( !array_key_exists( $method, self::$ignoreList ) || !array_key_exists( $name, self::$ignoreList[$method] ) )
                 && ( strlen( $input ) > self::$minimumLength )
-                && preg_match( self::$reXSS, $input, $matches) )
+                && preg_match( self::$reXSS, $input, $matches))
             {
                 self::$xss[ $method ][ strlen($input) ][] = $input;
             }
@@ -121,7 +121,7 @@ class noxss
             $xssDetected = self::_checkForProblems();
 
             if ($xssDetected) {
-                if ( is_callable($f) ) {
+                if (is_callable($f)) {
                     $f( self::$output );
                 } else {
                     header( 'HTTP/1.1 400 Bad Request' );
@@ -139,9 +139,9 @@ class noxss
         foreach (self::$xss as $inputs) {
             krsort( $inputs, SORT_NUMERIC );
             foreach ($inputs as $values) {
-                if ( is_array($values) ) {
+                if (is_array($values)) {
                     foreach ($values as $value) {
-                        if ( false !== strpos( self::$output, $value) ) {
+                        if (false !== strpos( self::$output, $value)) {
                             // One of the potential XSS attack inputs has been found _unchanged_ in the output
                             return true;
                         }
@@ -157,5 +157,4 @@ class noxss
     {
         self::$ignoreList[$method][$name] = 1;
     }
-
 }
