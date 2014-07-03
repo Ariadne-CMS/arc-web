@@ -53,6 +53,9 @@ class ClientStream implements ClientInterface
 
     public function request( $type, $url, $request = null, $options = array() )
     {
+        $this->responseHeaders = null;
+        $this->requestHeaders = null;
+
         if ($type == 'GET' && $request) {
             $url = $this->buildURL( $url, $request );
             $request = '';

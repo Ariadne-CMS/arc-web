@@ -62,4 +62,16 @@
             $page = $client->get('afeafawfafweaga');
             $this->assertFalse($page);
         }
+
+        // second request should unset old data
+        function testSecondRequest()
+        {
+            $client = new \arc\http\ClientStream();
+            $res1 = $client->get('http://www.ariadne-cms.org/');
+            $resHeader1 = $client->responseHeaders;
+
+            $res2 = $client->get('invalid');
+            $resHeader2 = $client->responseHeaders;
+            $this->assertTrue($resHeader1 !== $resHeader2);
+        }
     }
