@@ -54,5 +54,12 @@
             $this->assertTrue(strstr($client->requestHeaders,"User-Agent: SimpleTestClient\r\n") !== false);
             // should not contain an empty line
             $this->assertFalse(strstr($client->requestHeaders,"\r\n\r\n") !== false);
-		  }
+        }
+
+        function testBroken()
+        {
+            $client = new \arc\http\ClientStream();
+            $page = $client->get('afeafawfafweaga');
+            $this->assertFalse($page);
+        }
     }

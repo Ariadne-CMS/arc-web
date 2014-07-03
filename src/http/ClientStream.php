@@ -74,7 +74,9 @@ class ClientStream implements ClientInterface
 
         $context = stream_context_create( array( 'http' => $options ) );
         $result = @file_get_contents( (string) $url, false, $context );
-        $this->responseHeaders = $http_response_header; //magic php variable set by file_get_contents.
+        if (isset( $http_response_header )){
+            $this->responseHeaders = $http_response_header; //magic php variable set by file_get_contents.
+        }
         $this->requestHeaders = isset($options['header']) ? $options['header'] : '';
 
         return $result;
