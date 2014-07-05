@@ -11,7 +11,7 @@
 
     require_once( __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php' );
 
-    class TestNoXSS extends UnitTestCase
+    class TestNoXSS extends PHPUnit_Framework_TestCase
     {
         function testDetectPrevent()
         {

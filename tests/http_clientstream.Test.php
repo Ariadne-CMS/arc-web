@@ -11,7 +11,7 @@
 
     require_once( __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php' );
 
-    class TestHTTP extends UnitTestCase
+    class TestHTTP extends PHPUnit_Framework_TestCase
     {
         function testCreateInstance()
         {

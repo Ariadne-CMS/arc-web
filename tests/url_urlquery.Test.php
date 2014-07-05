@@ -11,7 +11,7 @@
 
     require_once( __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php' );
 
-    class TestUrlQuery extends UnitTestCase
+    class TestUrlQuery extends PHPUnit_Framework_TestCase
     {
         function testparsePHPUrl()
         {

@@ -12,49 +12,49 @@
 
     require_once( __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php' );
 
-    class TestUrl extends UnitTestCase
+    class TestUrl extends PHPUnit_Framework_TestCase
     {
         function testSafeUrl()
         {
             $starturl = 'http://www.ariadne-cms.org/?frop=1';
             $url = \arc\url::safeUrl($starturl);
-            $this->assertIsA($url, '\arc\url\Url');
-            $this->assertEqual($url.'', $starturl);
+            $this->assertInstanceOf('\arc\url\Url', $url);
+            $this->assertEquals($url.'', $starturl);
 
             $starturl = 'http://www.ariadne-cms.org/?frop=1&frop=2';
             $url = \arc\url::safeUrl($starturl);
             $url->fragment = 'test123';
-            $this->assertEqual($url.'', $starturl .'#test123');
+            $this->assertEquals($url.'', $starturl .'#test123');
 
             $starturl = 'http://www.ariadne-cms.org/view.html?some+thing';
             $url = \arc\url::safeUrl($starturl);
-            $this->assertIsA($url, '\arc\url\Url');
-            $this->assertEqual($url.'', $starturl);
-            $this->assertEqual($url->query[0], 'some thing');
+            $this->assertInstanceOf('\arc\url\Url', $url);
+            $this->assertEquals($url.'', $starturl);
+            $this->assertEquals($url->query[0], 'some thing');
 
             $starturl = 'http://www.ariadne-cms.org/view.html?some%20thing';
             $url = \arc\url::safeUrl($starturl);
-            $this->assertIsA($url, '\arc\url\Url');
-            $this->assertEqual($url->query[0], 'some thing');
+            $this->assertInstanceOf('\arc\url\Url', $url);
+            $this->assertEquals($url->query[0], 'some thing');
         }
 
         function testparseUrl()
         {
             $starturl = 'http://www.ariadne-cms.org/?frop=1';
             $url = \arc\url::url($starturl);
-            $this->assertIsA($url, '\arc\url\Url');
-            $this->assertEqual($url.'', $starturl);
+            $this->assertInstanceOf('\arc\url\Url', $url);
+            $this->assertEquals($url.'', $starturl);
 
             $starturl = 'http://www.ariadne-cms.org/?frop=1&frml=2';
             $url = \arc\url::url($starturl);
             $url->fragment = 'test123';
-            $this->assertEqual($url.'', $starturl .'#test123');
+            $this->assertEquals($url.'', $starturl .'#test123');
 
             $starturl = 'http://www.ariadne-cms.org/view.html?foo=some+thing';
             $url = \arc\url::url($starturl);
-            $this->assertIsA($url, '\arc\url\Url');
-            $this->assertEqual($url.'', $starturl);
-            $this->assertEqual($url->query['foo'], 'some thing');
+            $this->assertInstanceOf('\arc\url\Url', $url);
+            $this->assertEquals($url.'', $starturl);
+            $this->assertEquals($url->query['foo'], 'some thing');
 
         }
 
@@ -62,8 +62,8 @@
         {
             $starturl = 'http://foo:bar@www.ariadne-cms.org:80/';
             $url = \arc\url::url($starturl);
-            $this->assertIsA($url, '\arc\url\Url');
-            $this->assertEqual($url.'', $starturl);
+            $this->assertInstanceOf('\arc\url\Url', $url);
+            $this->assertEquals($url.'', $starturl);
         }
 
         function testParseCommonURLS()
@@ -83,7 +83,7 @@
             ];
             foreach ($commonUrls as $sourceUrl) {
                 $url =\arc\url::safeUrl( $sourceUrl );
-                $this->assertEqual( ''.$url, $sourceUrl );
+                $this->assertEquals( ''.$url, $sourceUrl );
             }
         }
 
