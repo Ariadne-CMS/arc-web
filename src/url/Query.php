@@ -156,5 +156,4 @@ class Query extends \ArrayObject implements QueryInterface
             );
         }
     }
-
 }
