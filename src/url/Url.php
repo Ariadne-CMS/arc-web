@@ -51,45 +51,45 @@ class Url
         switch ($this->scheme) {
             case 'file':
                 return $this->getScheme() . '//' . $this->host . $this->getFilePath();
-            break;
+                break;
             case 'mailto':
             case 'news':
                 return ( $this->path ? $this->getScheme() . $this->getPath() : '' );
-            break;
+                break;
             case 'ldap':
                 return $this->getSchemeAndAuthority() . $this->getPath() . $this->getLdapQuery();
-            break;
+                break;
             default:
                 return $this->getSchemeAndAuthority() . $this->getPath() . $this->getQuery() . $this->getFragment();
-            break;
+                break;
         }
     }
 
     public function __get($name)
     {
-        switch ( (string) $name ) {
+        switch ((string) $name) {
             case 'password':
                 return $this->pass;
-            break;
+                break;
             case 'query':
                 return $this->query;
-            break;
+                break;
         }
     }
 
     public function __set($name, $value)
     {
-        switch ( (string) $name ) {
+        switch ((string) $name) {
             case 'password':
                 $this->pass = $value;
-            break;
+                break;
             case 'query':
                 if( is_object( $this->query )) {
                     $this->query->reset()->import( $value );
                 } else {
                     $this->query = $value;
                 }
-            break;
+                break;
         }
     }
 
@@ -156,7 +156,7 @@ class Url
     {
         // in the file: scheme, a path must start with a '/' even if no host is set. This contradicts with the email: scheme.
         $path = $this->getPath();
-        if ($path && $path[0]!=='/') {
+        if ($path && $path[0] !== '/') {
             $path = '/' . $path;
         }
 
@@ -183,5 +183,4 @@ class Url
     {
         return ( $this->fragment ? '#' . urlencode($this->fragment) : '' );
     }
-
 }
