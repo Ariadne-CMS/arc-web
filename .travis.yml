@@ -11,5 +11,8 @@ script: phpunit ./tests
 
 notifications:
   email: false
-  irc: "open.ircnet.org#ariadne"
-
+  irc:
+    channels:
+       secure: "IL3HE1xWBVCaJMEQ6+7jE+K+EKJspfJAAgD8cIuvSbp75ANAzOGhTB8oKSiXhpqycdiT1g9DFw63aE/aP5v7hzR5KIioEi29ObWihY2xE5GgLlKEnSEw2TsikjPvmio7AuE3bLrFg8GBuZICcH5qG+qQzfAZInp1DSrk3VghmDc="
+    on_success: change
+    on_failure: always
