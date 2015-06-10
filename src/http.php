@@ -17,7 +17,7 @@ class http
     {
         $client = new http\ClientStream();
 
-        return $client->send( $method, $url, $query, $options );
+        return $client->request( $method, $url, $query, $options );
     }
 
     public static function client( $options = array() )

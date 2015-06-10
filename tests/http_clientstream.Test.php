@@ -9,9 +9,7 @@
      * file that was distributed with this source code.
      */
 
-    require_once( __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php' );
-
-    class TestHTTP extends PHPUnit_Framework_TestCase
+    class TestHTTP_clientStream extends PHPUnit_Framework_TestCase
     {
         function testCreateInstance()
         {
