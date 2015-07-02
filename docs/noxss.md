@@ -35,10 +35,10 @@ in the case of a bad request and the only argument to the callback is the genera
     ?>
 
 Although you can potentially try to fix the output and strip out any offending content, you shouldn't. Any kind of
-'cleaning' you do can and will be used against you and smart attackers will use your cleaning routine against you to do
+'cleaning' you do, can and will be used against you. Smart attackers will use your cleaning routine to do
 even more evil stuff. The only sure way to avoid an XSS attack is to completely skip the output.
 
-`arc/noxss` doesn't tell you which input is the culprit. This is intentionally. There is no way to fix the input anyway.
+`arc/noxss` doesn't tell you which input is the culprit. This is by design. There is no way to fix the input anyway.
 If you want to log inputs, just grab whatever is in \_GET or \_POST or \_COOKIE and log that. If you do log something,
 make sure it is the URL called so you can fix your code. The XSS `prevent()` will only trigger _if you did not filter 
 user input before including it in your webpage!_
@@ -55,5 +55,5 @@ too many different contexts in which output needs to be escaped slightly differe
 to be wrong once for an attacker to abuse it.
 
 Finally remember that most requests triggering the XSS `prevent()` call will most probably be innocent people with an 
-apostrophe in their name or some other valid use case for 'suspicious' characters in their input. Try to not immediately
-tell them that they are evil hackers...
+apostrophe in their name or some other valid use case for 'suspicious' characters in their input. Don't jump to 
+conclusions and tell them that they are evil hackers...
