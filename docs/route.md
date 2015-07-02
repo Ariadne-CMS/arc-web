@@ -27,7 +27,7 @@ This component provides very basic URL routing. You could use it like this:
                 }
             }
     ];
-    $result = \arc\route::match('/blog/42.html', $config);
+    $result = \arc\route::match('/blog/42.html', $config)['rsult'];
      
 URL routing is a good way to implement a REST api, but in this form less usefull for a CMS system. Mostly because routes
 are defined in code instead of user editable data. So use it with care.
@@ -64,7 +64,7 @@ You can create more complex routers by nesting the routing like this:
                         return 'Site of '.$params['name'];
                     }
                 ];
-                return \arc\route::match($params['rest'], $subroute);
+                return \arc\route::match($params['rest'], $subroute)['result'];
             } else {
                 return 'main';
             }
@@ -77,6 +77,6 @@ You can create more complex routers by nesting the routing like this:
             }
         }
     ];
-    $result = \arc\route::match('/site/mike/blog/', $config);
+    $result = \arc\route::match('/site/mike/blog/', $config)['result'];
         
         
