@@ -20,6 +20,6 @@
         function testClient()
         {
             $res = \arc\http::client();
-            $this->assertInstanceOf('\arc\http\ClientInterface',$res);
+            $this->assertInstanceOf('\arc\http\Client',$res);
         }
     }
