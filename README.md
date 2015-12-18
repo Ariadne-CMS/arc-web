@@ -16,6 +16,7 @@ Application Framework and Content Management System
 
 arc/web contains
 ------------------
-- url: create and parse urls and query arguments
-- http: simple http requests and generic access to user input
-- noxss: xss detection and prevention wrapper
+- [url](docs/url.md): create and parse urls and query arguments
+- [http](docs/http.md): simple http requests and generic access to user input
+- [noxss](docs/noxss.md): xss detection and prevention wrapper
+- [route](docs/route.md): micro URL router.
