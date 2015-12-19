@@ -7,7 +7,7 @@ ARC: Ariadne Component Library
 [![Latest Unstable Version](https://poser.pugx.org/arc/web/v/unstable.svg)](https://packagist.org/packages/arc/web)
 [![License](https://poser.pugx.org/arc/web/license.svg)](https://packagist.org/packages/arc/web)
 
-A flexible component library for PHP 5.4+ 
+A flexible component library for PHP 5.6+ 
 ----------------------------------------- 
 
 The Ariadne Component Library is a spinoff from the Ariadne Web 
