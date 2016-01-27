@@ -49,7 +49,7 @@ class ClientStream implements Client
      * Send a HTTP request and return the response
      * @param null  $method The method to use, GET, POST, etc.
      * @param null  $url    The URL to request
-     * @param null  $query  The query string
+     * @param null  $request  The query string
      * @param array $options Any of the HTTP stream context options, e.g. extra headers.
      * @return string
      */
@@ -94,7 +94,7 @@ class ClientStream implements Client
     /**
      * Send a GET request
      * @param null  $url    The URL to request
-     * @param null  $query  The query string
+     * @param null  $request The query string
      * @param array $options Any of the HTTP stream context options, e.g. extra headers.
      * @return string
      */
@@ -106,7 +106,7 @@ class ClientStream implements Client
     /**
      * Send a POST request
      * @param null  $url    The URL to request
-     * @param null  $query  The query string
+     * @param null  $request The query string
      * @param array $options Any of the HTTP stream context options, e.g. extra headers.
      * @return string
      */
@@ -118,7 +118,7 @@ class ClientStream implements Client
     /**
      * Send a PUT request
      * @param null  $url    The URL to request
-     * @param null  $query  The query string
+     * @param null  $request The query string
      * @param array $options Any of the HTTP stream context options, e.g. extra headers.
      * @return string
      */
