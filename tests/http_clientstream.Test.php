@@ -24,7 +24,7 @@ class TestHTTP_clientStream extends PHPUnit_Framework_TestCase
         $client = new \arc\http\ClientStream($options);
 
         // do request, any will do, just that requestHeaders will get set
-        $client->get('http://www.ariadne-cms.org/');
+        $client->get('https://www.ariadne-cms.org/');
 
         $this->assertTrue(in_array("X-Test-Header: frop",$client->requestHeaders));
     }
@@ -32,7 +32,7 @@ class TestHTTP_clientStream extends PHPUnit_Framework_TestCase
     function testGet()
     {
         $client = new \arc\http\ClientStream();
-        $res = $client->get('http://www.ariadne-cms.org/');
+        $res = $client->get('https://www.ariadne-cms.org/');
 
         $this->assertTrue( $res != '');
         $this->assertTrue ($client->responseHeaders[0] == 'HTTP/1.1 200 OK');
@@ -47,7 +47,7 @@ class TestHTTP_clientStream extends PHPUnit_Framework_TestCase
         $client->headers("X-Debug1: false\r\nX-Debug2: true\r\n");
 
         // do request, any will do
-        $client->get('http://www.ariadne-cms.org/');
+        $client->get('https://www.ariadne-cms.org/');
 
         $this->assertTrue(in_array("User-Agent: SimpleTestClient",$client->requestHeaders));
         // should not contain an empty line
@@ -65,7 +65,7 @@ class TestHTTP_clientStream extends PHPUnit_Framework_TestCase
     function testSecondRequest()
     {
         $client = new \arc\http\ClientStream();
-        $res1 = $client->get('http://www.ariadne-cms.org/');
+        $res1 = $client->get('https://www.ariadne-cms.org/');
         $resHeader1 = $client->responseHeaders;
 
         $res2 = $client->get('invalid');
@@ -85,7 +85,7 @@ class TestHTTP_clientStream extends PHPUnit_Framework_TestCase
 
     function testParseHeaders() {
         $client = new \arc\http\ClientStream();
-        $res = $client->get('http://www.ariadne-cms.org/');
+        $res = $client->get('https://www.ariadne-cms.org/');
         $headers = \arc\http\headers::parse( $client->responseHeaders );
         $this->assertTrue( $headers[0] == 'HTTP/1.1 200 OK');
         $this->assertTrue( isset($headers['Content-Type']));
