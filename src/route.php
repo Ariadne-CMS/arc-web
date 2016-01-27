@@ -15,7 +15,6 @@ class route {
      * @return array|bool
      */
     public static function match($path, $routes) {
-        $controller = null;
         $routes     = \arc\tree::expand($routes);
         $controller = \arc\tree::dive(
             $routes->cd($path),

@@ -20,7 +20,7 @@ interface Client
     /**
     * Send a HTTP GET request and return the response
     * @param string $url The URL to request
-    * @param mixed $query The query paramaters as a string or array
+    * @param mixed $request The query paramaters as a string or array
     * @param array $options Any of the HTTP stream context options, e.g. extra headers.
     * @return string
     */
@@ -29,7 +29,7 @@ interface Client
     /**
      * Send a HTTP POST request and return the response
      * @param string $url The URL to request
-     * @param mixed $query The query paramaters as a string or array
+     * @param mixed $request The query paramaters as a string or array
      * @param array $options Any of the HTTP stream context options, e.g. extra headers.
      * @return string
      */
@@ -38,7 +38,7 @@ interface Client
     /**
      * Send a HTTP PUT request and return the response
      * @param string $url The URL to request
-     * @param mixed $query The query paramaters as a string or array
+     * @param mixed $request The query paramaters as a string or array
      * @param array $options Any of the HTTP stream context options, e.g. extra headers.
      * @return string
      */
@@ -47,7 +47,7 @@ interface Client
     /**
      * Send a HTTP DELETE request and return the response
      * @param string $url The URL to request
-     * @param mixed $query The query paramaters as a string or array
+     * @param mixed $request The query paramaters as a string or array
      * @param array $options Any of the HTTP stream context options, e.g. extra headers.
      * @return string
      */
@@ -57,11 +57,11 @@ interface Client
      * Send a HTTP request and return the response
      * @param string $method The method to use, GET, POST, etc.
      * @param string $url The URL to request
-     * @param mixed $query The query paramaters as a string or array
+     * @param mixed $request The query paramaters as a string or array
      * @param array $options Any of the HTTP stream context options, e.g. extra headers.
      * @return string
      */
-    public function request( $type, $url, $request = null, $options = [] );
+    public function request( $method, $url, $request = null, $options = [] );
 
     /**
      * Adds headers for subsequent requests
