@@ -47,10 +47,10 @@ class ClientStream implements Client
 
     /**
      * Send a HTTP request and return the response
-     * @param null  $method The method to use, GET, POST, etc.
-     * @param null  $url    The URL to request
-     * @param null  $request  The query string
-     * @param array $options Any of the HTTP stream context options, e.g. extra headers.
+     * @param string       $method  The method to use, GET, POST, etc.
+     * @param string       $url     The URL to request
+     * @param array|string $request The query string
+     * @param array        $options Any of the HTTP stream context options, e.g. extra headers.
      * @return string
      */
     public function request( $type, $url, $request = null, $options = [] )
@@ -93,9 +93,9 @@ class ClientStream implements Client
 
     /**
      * Send a GET request
-     * @param null  $url    The URL to request
-     * @param null  $request The query string
-     * @param array $options Any of the HTTP stream context options, e.g. extra headers.
+     * @param string         $url     The URL to request
+     * @param array|string   $request The query string
+     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
      * @return string
      */
     public function get( $url, $request = null, $options = [] )
@@ -105,9 +105,9 @@ class ClientStream implements Client
 
     /**
      * Send a POST request
-     * @param null  $url    The URL to request
-     * @param null  $request The query string
-     * @param array $options Any of the HTTP stream context options, e.g. extra headers.
+     * @param string         $url     The URL to request
+     * @param array|string   $request The query string
+     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
      * @return string
      */
     public function post( $url, $request = null, $options = [] )
@@ -117,9 +117,9 @@ class ClientStream implements Client
 
     /**
      * Send a PUT request
-     * @param null  $url    The URL to request
-     * @param null  $request The query string
-     * @param array $options Any of the HTTP stream context options, e.g. extra headers.
+     * @param string         $url     The URL to request
+     * @param array|string   $request The query string
+     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
      * @return string
      */
     public function put( $url, $request = null, $options = [] )
@@ -129,9 +129,9 @@ class ClientStream implements Client
 
     /**
      * Send a DELETE request
-     * @param string $url
-     * @param array  $request
-     * @param array  $options
+     * @param string         $url     The URL to request
+     * @param array|string   $request The query string
+     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
      * @return string
      */
     public function delete( $url, $request = null, $options = [] )
