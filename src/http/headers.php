@@ -29,7 +29,7 @@ final class headers
     public static function parse( $headers ) {
         if ( !is_array($headers) && !$headers instanceof \ArrayObject ) {
             $headers = array_filter(
-                array_map( "trim", explode( "\n", (string) $headers ) )
+                array_map( 'trim', explode( "\n", (string) $headers ) )
             );
         }
         $result = [];
@@ -84,10 +84,10 @@ final class headers
     public static function parseHeader($header)
     {
         $header = (strpos($header, ':')!==false) ? explode(':', $header)[1] : $header;
-        $info = array_map('trim', explode(',', $header));
+        $info   = array_map('trim', explode(',', $header));
         $header = [];
         foreach ( $info as $entry ) {
-            $temp = array_map( 'trim', explode( '=', $entry ));
+            $temp               = array_map( 'trim', explode( '=', $entry ));
             $header[ $temp[0] ] = (isset($temp[1]) ? $temp[1] : $temp[0] );
         }
         return $header;
