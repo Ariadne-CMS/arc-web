@@ -74,16 +74,16 @@ final class headers
      * @return int The number of seconds you may cache this result starting from now.
      */
     public static function parseCacheTime( $headers, $private=true ) {
-        $result = 0;
+        $result = null;
         if ( is_string($headers) || !isset($headers['Content-Type'] )) {
             $headers = \arc\http\headers::parse( $headers );
         }
         if ( isset( $headers['Cache-Control'] ) ) {
             $header = self::getLastHeader($headers['Cache-Control']);
-            $info = array_map('trim', explode($header, ','));
+            $info = array_map('trim', explode(',', $header));
             $header = [];
             foreach ( $info as $entry ) {
-                $temp = array_map( 'trim', explode( $entry, '='));
+                $temp = array_map( 'trim', explode( '=', $entry ));
                 $header[ $temp[0] ] = (isset($temp[1]) ? $temp[1] : $temp[0] );
             }
             $dontcache = false;
@@ -91,7 +91,11 @@ final class headers
                 switch($key) {
                     case 'max-age':
                     case 's-maxage':
-                        $result = (int) $value;
+                        if ( isset($result) ) {
+                            $result = min($result, (int) $value);
+                        } else {
+                            $result = (int) $value;
+                        }
                         break;
                     case 'public':
                         break;
@@ -111,16 +115,13 @@ final class headers
                 }
             }
             if ( $dontcache ) {
-                return 0;
-            }
-            if ( $result ) {
-                return $result;
+                $result = 0;
             }
         }
-        if ( isset( $headers['Expires'] ) ) {
+        if ( !isset($result) && isset( $headers['Expires'] ) ) {
             $result = strtotime( self::getLastHeader($headers['Expires']) ) - time();
         }
-        return $result;
+        return (int) $result;
     }
 
 }
