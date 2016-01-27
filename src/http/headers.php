@@ -23,7 +23,7 @@ final class headers
      * [ 'Location' => 'http://www.example.com', ... ]
      * When multiple headers with the same name are present, all values will form an array, in the order in which
      * they are present in the source.
-     * @param string $headers The headers string to parse.
+     * @param string|string[] $headers The headers string to parse.
      * @return array
      */
     public static function parse( $headers ) {
@@ -100,10 +100,10 @@ final class headers
      */
     public static function mergeHeaders( $headers )
     {
+        $result = [];
         if ( is_string($headers) ) {
             $result = self::parseHeader( $headers );
         } else foreach ( $headers as $header ) {
-            $result = [];
             if (is_string($header)) {
                 $header = self::parseHeader($header);
             }
@@ -114,7 +114,7 @@ final class headers
 
     private static function getCacheControlTime( $header, $private )
     {
-        $result = null;
+        $result    = null;
         $dontcache = false;
         foreach ( $header as $key => $value ) {
             switch($key) {
