@@ -21,6 +21,7 @@ namespace arc\url;
  *		$url->path = '/docs/search/';
  *		$url->query = 'a=1&a=2';
  *		echo $url; // => 'http://www.ariadne-cms.org/docs/search/?a=1&a=2'
+ * @property Query $query The query arguments
  */
 class Url
 {
