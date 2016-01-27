@@ -18,17 +18,17 @@ namespace arc\http;
  */
 class ClientStream implements Client
 {
-    private $options = ['headers' => []];
+    private $options        = ['headers' => []];
 
     public $responseHeaders = null;
-    public $requestHeaders = null;
+    public $requestHeaders  = null;
 
     /**
      * Merges header string and headers array to single string with all headers
      * @return string
      */
     private function mergeHeaders() {
-        $args = func_get_args();
+        $args   = func_get_args();
         $result = '';
         foreach ( $args as $headers ) {
             if (is_array($headers) || $headers instanceof \ArrayObject ) {
@@ -47,7 +47,7 @@ class ClientStream implements Client
 
     /**
      * Send a HTTP request and return the response
-     * @param string       $method  The method to use, GET, POST, etc.
+     * @param string       $type    The method to use, GET, POST, etc.
      * @param string       $url     The URL to request
      * @param array|string $request The query string
      * @param array        $options Any of the HTTP stream context options, e.g. extra headers.
@@ -62,7 +62,7 @@ class ClientStream implements Client
         }
 
         $options = [
-            'method' => $type,
+            'method'  => $type,
             'content' => $request
         ] + $options;
 
