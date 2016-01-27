@@ -69,8 +69,17 @@ final class headers
         return $headers;
     }
 
+    /**
+     * Return an array with values from a header like Cache-Control
+     * e.g. 'max-age=300,public,no-store'
+     * results in
+     * [ 'max-age' => '300', 'public' => 'public', 'no-store' => 'no-store' ]
+     * @param string $header
+     * @return array
+     */
     public static function parseHeader($header)
     {
+        $header = (strpos($header, ':')!==false) ? explode(':', $header)[1] : $header;
         $info = array_map('trim', explode(',', $header));
         $header = [];
         foreach ( $info as $entry ) {
@@ -80,8 +89,9 @@ final class headers
         return $header;
     }
 
-    static private function getCacheControlTime( $header, $private )
+    private static function getCacheControlTime( $header, $private )
     {
+        $result = null;
         $dontcache = false;
         foreach ( $header as $key => $value ) {
             switch($key) {
