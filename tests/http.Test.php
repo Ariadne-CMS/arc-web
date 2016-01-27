@@ -74,4 +74,16 @@ EOF;
             $this->assertEquals(0, $cachetime);
         }
 
+        function testCacheMultiple()
+        {
+            $headerString = <<< EOF
+HTTP/1.1 200 OK
+Cache-Control: public
+Cache-Control: max-age=300,s-maxage=900
+EOF;
+            $headers = \arc\http\headers::parse($headerString);
+            $cachetime = \arc\http\headers::parseCacheTime($headers);
+            $this->assertEquals(300, $cachetime);
+        }
+
     }

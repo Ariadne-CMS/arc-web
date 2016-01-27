@@ -34,7 +34,11 @@ final class headers
         }
         $result = [];
         foreach( $headers as $key => $header ) {
-            $temp = array_map('trim', explode(':', $header, 2) );
+            if ( !is_array($header) ) {
+                $temp = array_map('trim', explode(':', $header, 2) );
+            } else {
+                $temp = $header;
+            }
             if ( isset( $temp[1] ) ) {
                 if ( !isset($result[ $temp[0]]) ) {
                     // first entry for this header
@@ -89,6 +93,25 @@ final class headers
         return $header;
     }
 
+    /**
+     * Merge multiple occurances of a comma seperated header
+     * @param array $headers
+     * @return array
+     */
+    public static function mergeHeaders( $headers )
+    {
+        if ( is_string($headers) ) {
+            $result = self::parseHeader( $headers );
+        } else foreach ( $headers as $header ) {
+            $result = [];
+            if (is_string($header)) {
+                $header = self::parseHeader($header);
+            }
+            $result = array_replace_recursive( $result, $header );
+        }
+        return $result;
+    }
+
     private static function getCacheControlTime( $header, $private )
     {
         $result = null;
@@ -130,22 +153,22 @@ final class headers
 
     /**
      * Parse response headers to determine if and how long you may cache the response. Doesn't understand ETags.
-     * @param mixed $headers Headers string or array as returned by parse()
+     * @param string|string[] $headers Headers string or array as returned by parse()
      * @param bool $private Whether to store a private cache or public cache image.
      * @return int The number of seconds you may cache this result starting from now.
      */
     public static function parseCacheTime( $headers, $private=true )
     {
         $result = null;
-        if ( is_string($headers) || !isset($headers['Content-Type'] )) {
+        if ( is_string($headers) || ( !isset($headers['Cache-Control']) && !isset($headers['Expires']) ) ) {
             $headers = \arc\http\headers::parse( $headers );
         }
         if ( isset( $headers['Cache-Control'] ) ) {
-            $header = self::parseHeader( self::getLastHeader( $headers['Cache-Control'] ) );
+            $header = self::mergeHeaders( $headers['Cache-Control'] );
             $result = self::getCacheControlTime( $header, $private );
         }
         if ( !isset($result) && isset( $headers['Expires'] ) ) {
-            $result = strtotime( self::getLastHeader($headers['Expires']) ) - time();
+            $result = strtotime( self::getLastHeader( $headers['Expires'] ) ) - time();
         }
         return (int) $result;
     }
