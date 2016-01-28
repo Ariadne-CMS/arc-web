@@ -37,18 +37,37 @@
             $this->assertEquals($url->query[0], 'some thing');
         }
 
-        function testparseUrl()
+        function testparseUrlQueryMultipleElements()
         {
-            $starturl = 'http://www.ariadne-cms.org/?frop=1';
+            $starturl = 'http://www.ariadne-cms.org/?test=test&test=frop';
             $url = \arc\url::url($starturl);
             $this->assertInstanceOf('\arc\url\Url', $url);
-            $this->assertEquals($url.'', $starturl);
+            $this->assertInstanceOf( '\arc\url\Query', $url->query );
+            $this->assertEquals( 'frop', ''.$url->query['test'], "PHP url parser, the second instance has precedence");
+            $this->assertNotEquals( $starturl, ''.$url );
+        }
 
-            $starturl = 'http://www.ariadne-cms.org/?frop=1&frml=2';
+        function testparseUrlQueryUnnumberedElements()
+        {
+            $starturl = 'http://www.ariadne-cms.org/?test[]=test&test[]=frop';
             $url = \arc\url::url($starturl);
-            $url->fragment = 'test123';
-            $this->assertEquals($url.'', $starturl .'#test123');
+            $this->assertInstanceOf('\arc\url\Url', $url);
+            $this->assertInstanceOf( '\arc\url\Query', $url->query );
+            $this->assertEquals( ['test', 'frop'], $url->query['test'], "Auto indexed array from query");
+            $this->assertEquals( $starturl, ''.$url );
+        }
 
+        function testparseUrlQueryNumberedElements()
+        {
+            $starturl = 'http://www.ariadne-cms.org/?test[1]=test&test[0]=frop';
+            $url = \arc\url::url($starturl);
+            $this->assertInstanceOf('\arc\url\Url', $url);
+            $this->assertInstanceOf( '\arc\url\Query', $url->query );
+            $this->assertEquals( ['frop', 'test'], $url->query['test'], "manual index array from query");
+        }
+
+        function testparseUrlQueryWithEncodedSpace()
+        {
             $starturl = 'http://www.ariadne-cms.org/view.html?foo=some+thing';
             $url = \arc\url::url($starturl);
             $this->assertInstanceOf('\arc\url\Url', $url);
