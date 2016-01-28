@@ -64,6 +64,7 @@
             $this->assertInstanceOf('\arc\url\Url', $url);
             $this->assertInstanceOf( '\arc\url\Query', $url->query );
             $this->assertEquals( ['frop', 'test'], $url->query['test'], "manual index array from query");
+            $this->assertEquals( $starturl, ''.$url );
         }
 
         function testparseUrlQueryWithEncodedSpace()
