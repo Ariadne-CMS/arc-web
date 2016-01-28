@@ -188,7 +188,7 @@ class Url
             $path = '/' . $path;
         }
         // urlencode encodes too many characters for the path part, so we decode them back to get readable urls.
-        return str_replace( [ '%3D', '%2B', '%3A', '%40' ], [ '=', '+', ':', '@' ], join( '/', array_map( 'urlencode', explode( '/', $path ) ) ) );
+        return str_replace( [ '%3D', '%2B', '%3A', '%40', '%7E'], [ '=', '+', ':', '@', '~'], $path = join( '/', array_map( 'urlencode', explode( '/', $path ) ) ) );
     }
 
     /**
