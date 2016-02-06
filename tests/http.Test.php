@@ -11,7 +11,8 @@
 
     class TestHTTP extends PHPUnit_Framework_TestCase
     {
-/*        function testGet()
+
+        function testGet()
         {
             $res = \arc\http::get( 'http://www.ariadne-cms.org/', '?foo=bar' );
             $this->assertNotEmpty($res);
@@ -23,7 +24,7 @@
             $this->assertInstanceOf('\arc\http\Client',$res);
         }
 
-*/
+
         function testHeaders()
         {
             $headerString = <<< EOF
@@ -86,9 +87,21 @@ EOF;
             $this->assertEquals(300, $cachetime);
         }
 
+        function testCacheMultiline()
+        {
+            $headerString = <<< EOF
+HTTP/1.1 200 OK
+Cache-Control: public,
+    max-age=300,s-maxage=900
+EOF;
+            $headers = \arc\http\headers::parse($headerString);
+            $cachetime = \arc\http\headers::parseCacheTime($headers);
+            $this->assertEquals(300, $cachetime);
+        }
+
         function testAcceptContent()
         {
-            $header = 'Accept: text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5';
+            $header = 'Accept: text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, *'.'/'.'*;q=0.5';
             $accept = \arc\http\headers::parseHeader($header);
             $this->assertEquals('0.3', $accept[0]['q']);
             $this->assertEquals('1',$accept[2]['level']);
@@ -96,5 +109,4 @@ EOF;
             $result = \arc\http\headers::accept($header, $acceptable);
             $this->assertEquals('text/html', $result);
         }
-
     }

@@ -18,6 +18,23 @@ namespace arc\http;
 final class headers
 {
 
+    private static function addHeader($headers, $name, $value)
+    {
+        if ( !isset($headers[ $name]) ) {
+            // first entry for this header
+            $headers[ $name ] = $value;
+        } else if ( is_string($headers[ $name ]) ) {
+            // second header entry with same name
+            $headers[ $name ] = [
+                $headers[ $name ],
+                $value
+            ];
+        } else { // third or later header entry with same name
+            $headers[ $name ][] = $value;
+        }
+        return $headers;
+    }
+
     /**
      * Parse response headers string from a HTTP request into an array of headers. e.g.
      * [ 'Location' => 'http://www.example.com', ... ]
@@ -33,30 +50,28 @@ final class headers
             );
         }
         $result = [];
+        $currentName = '';
         foreach( $headers as $key => $header ) {
             if ( !is_array($header) ) {
-                $temp = array_map('trim', explode(':', $header, 2) );
+                @list($name, $value) = array_map('trim', explode(':', $header, 2) );
             } else {
-                $temp = $header;
+                $name = $header;
+                $value = null;
             }
-            if ( isset( $temp[1] ) ) {
-                if ( !isset($result[ $temp[0]]) ) {
-                    // first entry for this header
-                    $result[ $temp[0] ] = $temp[1];
-                } else if ( is_string($result[ $temp[0] ]) ) {
-                    // second header entry with same name
-                    $result[ $temp[0] ] = [
-                        $result[ $temp[0] ],
-                        $temp[1]
-                    ];
-                } else { // third or later header entry with same name
-                    $result[ $temp[0] ][] = $temp[1];
-                }
+            if ( isset( $value ) ) {
+                $result = self::addHeader($result, $name, $value);
             } else if (is_numeric($key)) {
-                $result[] = $temp[0];
-            } else { // e.g. HTTP1/1 200 OK
-                $result[$key] = $temp[0];
+                if ( $currentName ) {
+                    $result = self::addHeader($result, $currentName, $name);
+                } else {
+                    $result[] = $name;
+                }
+                $name = $key;
+            } else {
+                $result = self::addHeader($result, $key, $name);
+                $name = $key;
             }
+            $currentName = ( is_numeric($name) ? $currentName : $name );
         }
         return $result;
     }
@@ -200,20 +215,15 @@ final class headers
         return current($result);
     }
 
-    public static function accept( $headers, $acceptable )
+    public static function accept( $header, $acceptable )
     {
-        if ( is_string($headers) || !isset($headers['Accept']) ) {
-            $headers = \arc\http\headers::parse( $headers );
+        if ( is_string($header) ) {
+            $header = \arc\http\headers::parseHeader( $header );
         }
-        if ( isset( $headers['Accept'] ) ) {
-            if ( !is_array($headers['Accept']) ) {
-                $headers['Accept'] = self::parseHeader($headers['Accept']);
-            }
-            $ordered = self::orderByQuality($headers['Accept']);
-            foreach( $ordered as $value ) {
-                if ( self::isAcceptable($value['value'], $acceptable) ) {
-                    return $value['value'];
-                }
+        $ordered = self::orderByQuality($header);
+        foreach( $ordered as $value ) {
+            if ( self::isAcceptable($value['value'], $acceptable) ) {
+                return $value['value'];
             }
         }
     }
