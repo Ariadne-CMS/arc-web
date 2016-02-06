@@ -77,18 +77,27 @@ final class headers
      * Return an array with values from a header like Cache-Control
      * e.g. 'max-age=300,public,no-store'
      * results in
-     * [ 'max-age' => '300', 'public' => 'public', 'no-store' => 'no-store' ]
+     * [ 0 => [ 'max-age' => '300' ], 1 => [ 'public' => 'public' ], 2 => ['no-store' => 'no-store'] ]
      * @param string $header
      * @return array
      */
     public static function parseHeader($header)
     {
         $header = (strpos($header, ':')!==false) ? explode(':', $header)[1] : $header;
-        $info   = array_map('trim', explode(',', $header));
+        $parts   = array_map('trim', explode(',', $header));
         $header = [];
-        foreach ( $info as $entry ) {
-            $temp               = array_map( 'trim', explode( '=', $entry ));
-            $header[ $temp[0] ] = (isset($temp[1]) ? $temp[1] : $temp[0] );
+        foreach ( $parts as $part ) {
+            $elements = array_map('trim', explode(';', $part));
+            $result = [];
+            foreach ($elements as $element) {
+                @list($name, $value)          = array_map('trim', explode( '=', $element));
+                if ( !isset($value) ) {
+                    $result['value'] = $name;
+                } else {
+                    $result[$name] = (isset($value) ? $value : $name);
+                }
+            }
+            $header[] = $result;
         }
         return $header;
     }
@@ -107,7 +116,7 @@ final class headers
             if (is_string($header)) {
                 $header = self::parseHeader($header);
             }
-            $result = array_replace_recursive( $result, $header );
+            $result = array_merge( $result, $header );
         }
         return $result;
     }
@@ -116,33 +125,28 @@ final class headers
     {
         $result    = null;
         $dontcache = false;
-        foreach ( $header as $key => $value ) {
-            switch($key) {
-                case 'max-age':
-                case 's-maxage':
-                    if ( isset($result) ) {
-                        $result = min($result, (int) $value);
-                    } else {
-                        $result = (int) $value;
-                    }
-                break;
-                case 'public':
-                break;
-                case 'private':
-                    if ( !$private ) {
+        foreach ( $header as $value ) {
+            if ( isset($value['value']) ) {
+                switch($value['value']) {
+                    case 'private':
+                        if ( !$private ) {
+                            $dontcache = true;
+                        }
+                    break;
+                    case 'no-cache':
+                    case 'no-store':
+                    case 'must-revalidate':
+                    case 'proxy-revalidate':
                         $dontcache = true;
-                    }
-                break;
-                case 'no-cache':
-                case 'no-store':
-                    $dontcache = true;
-                break;
-                case 'must-revalidate':
-                case 'proxy-revalidate':
-                    $dontcache = true; // FIXME: should return more information than just the cache time instead
-                break;
-                default:
-                break;
+                    break;
+                }
+            } else if ( isset($value['max-age']) || isset($value['s-maxage']) ) {
+                $maxage = (int) (isset($value['max-age']) ? $value['max-age'] : $value['s-maxage']);
+                if ( isset($result) ) {
+                    $result = min($result, $maxage);
+                } else {
+                    $result = $maxage;
+                }
             }
         }
         if ( $dontcache ) {
@@ -171,6 +175,47 @@ final class headers
             $result = strtotime( self::getLastHeader( $headers['Expires'] ) ) - time();
         }
         return (int) $result;
+    }
+
+    private static function orderByQuality($header)
+    {
+        $getQ = function($entry) {
+            $q = ( isset($entry['q']) ? floatval($entry['q']) : 1);
+            $name = $entry['value'];
+            if ( $name[ strlen($name)-1 ] == '*' || $name[0] == '*' ) {
+                $q -= 0.0001; // exact matches are preferred over wildcards
+            }
+            return $q;            
+        };
+        usort($header, function($a,$b) use ($getQ) {
+            return ($getQ($a)>$getQ($b) ? -1 : 1);
+        });
+        return $header;
+    }
+
+    private static function isAcceptable($name, $acceptable)
+    {
+        $name = str_replace('*', '.*', $name);
+        $result = preg_grep('|'.$name.'|', $acceptable);
+        return current($result);
+    }
+
+    public static function accept( $headers, $acceptable )
+    {
+        if ( is_string($headers) || !isset($headers['Accept']) ) {
+            $headers = \arc\http\headers::parse( $headers );
+        }
+        if ( isset( $headers['Accept'] ) ) {
+            if ( !is_array($headers['Accept']) ) {
+                $headers['Accept'] = self::parseHeader($headers['Accept']);
+            }
+            $ordered = self::orderByQuality($headers['Accept']);
+            foreach( $ordered as $value ) {
+                if ( self::isAcceptable($value['value'], $acceptable) ) {
+                    return $value['value'];
+                }
+            }
+        }
     }
 
 }
