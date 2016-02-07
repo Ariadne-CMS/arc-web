@@ -68,10 +68,10 @@ HTTP/1.1 200 OK
 Cache-Control: private,max-age=300,s-maxage=900
 EOF;
             $headers = \arc\http\headers::parse($headerString);
-            $cachetime = \arc\http\headers::parseCacheTime($headers);
+            $cachetime = \arc\http\headers::parseCacheTime($headers, true);
             $this->assertEquals(300, $cachetime);
 
-            $cachetime = \arc\http\headers::parseCacheTime($headers, false);
+            $cachetime = \arc\http\headers::parseCacheTime($headers);
             $this->assertEquals(0, $cachetime);
         }
 
