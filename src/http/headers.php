@@ -12,28 +12,11 @@
 namespace arc\http;
 
 /**
- * Class headers
+ * This class contains static methods to help parse HTTP headers.
  * @package arc\http
  */
 final class headers
 {
-
-    private static function addHeader($headers, $name, $value)
-    {
-        if ( !isset($headers[ $name]) ) {
-            // first entry for this header
-            $headers[ $name ] = $value;
-        } else if ( is_string($headers[ $name ]) ) {
-            // second header entry with same name
-            $headers[ $name ] = [
-                $headers[ $name ],
-                $value
-            ];
-        } else { // third or later header entry with same name
-            $headers[ $name ][] = $value;
-        }
-        return $headers;
-    }
 
     /**
      * Parse response headers string from a HTTP request into an array of headers. e.g.
@@ -77,19 +60,7 @@ final class headers
     }
 
     /**
-     * Return the last value sent for a specific header, uses the output of parse().
-     * @param (mixed) $headers An array with multiple header strings or a single string.
-     * @return array|mixed
-     */
-    private static function getLastHeader($headers) {
-        if ( is_array($headers) ) {
-            return end($headers);
-        }
-        return $headers;
-    }
-
-    /**
-     * Return an array with values from a header like Cache-Control
+     * Return an array with values from a Comma seperated header like Cache-Control or Accept
      * e.g. 'max-age=300,public,no-store'
      * results in
      * [ 0 => [ 'max-age' => '300' ], 1 => [ 'public' => 'public' ], 2 => ['no-store' => 'no-store'] ]
@@ -136,6 +107,66 @@ final class headers
         return $result;
     }
 
+    /**
+     * Parse response headers to determine if and how long you may cache the response. Doesn't understand ETags.
+     * @param string|string[] $headers Headers string or array as returned by parse()
+     * @param bool $private Whether to store a private cache (true) or public cache image (false). Default is public.
+     * @return int The number of seconds you may cache this result starting from now.
+     */
+    public static function parseCacheTime( $headers, $private=false )
+    {
+        $result = null;
+        if ( is_string($headers) || ( !isset($headers['Cache-Control']) && !isset($headers['Expires']) ) ) {
+            $headers = \arc\http\headers::parse( $headers );
+        }
+        if ( isset( $headers['Cache-Control'] ) ) {
+            $header = self::mergeHeaders( $headers['Cache-Control'] );
+            $result = self::getCacheControlTime( $header, $private );
+        }
+        if ( !isset($result) && isset( $headers['Expires'] ) ) {
+            $result = strtotime( self::getLastHeader( $headers['Expires'] ) ) - time();
+        }
+        return (int) $result;
+    }
+
+    /**
+     * Parses Accept-* header and returns best matching value from the $acceptable list
+     * Takes into account the Q value and wildcards. Does not take into account other parameters
+     * currently ( e.g. text/html;level=1 )
+     * @param array|string $header The Accept-* header (Accept:, Accept-Lang:, Accept-Encoding: etc.)
+     * @param array $acceptable List of acceptable values, in order of preference
+     * @return string
+     */
+    public static function accept( $header, $acceptable )
+    {
+        if ( is_string($header) ) {
+            $header = \arc\http\headers::parseHeader( $header );
+        }
+        $ordered = self::orderByQuality($header);
+        foreach( $ordered as $value ) {
+            if ( self::isAcceptable($value['value'], $acceptable) ) {
+                return $value['value'];
+            }
+        }
+    }
+
+    private static function addHeader($headers, $name, $value)
+    {
+        if ( !isset($headers[ $name]) ) {
+            // first entry for this header
+            $headers[ $name ] = $value;
+        } else if ( is_string($headers[ $name ]) ) {
+            // second header entry with same name
+            $headers[ $name ] = [
+                $headers[ $name ],
+                $value
+            ];
+        } else { // third or later header entry with same name
+            $headers[ $name ][] = $value;
+        }
+        return $headers;
+    }
+
     private static function getCacheControlTime( $header, $private )
     {
         $result    = null;
@@ -170,28 +201,6 @@ final class headers
         return $result;
     }
 
-    /**
-     * Parse response headers to determine if and how long you may cache the response. Doesn't understand ETags.
-     * @param string|string[] $headers Headers string or array as returned by parse()
-     * @param bool $private Whether to store a private cache or public cache image.
-     * @return int The number of seconds you may cache this result starting from now.
-     */
-    public static function parseCacheTime( $headers, $private=true )
-    {
-        $result = null;
-        if ( is_string($headers) || ( !isset($headers['Cache-Control']) && !isset($headers['Expires']) ) ) {
-            $headers = \arc\http\headers::parse( $headers );
-        }
-        if ( isset( $headers['Cache-Control'] ) ) {
-            $header = self::mergeHeaders( $headers['Cache-Control'] );
-            $result = self::getCacheControlTime( $header, $private );
-        }
-        if ( !isset($result) && isset( $headers['Expires'] ) ) {
-            $result = strtotime( self::getLastHeader( $headers['Expires'] ) ) - time();
-        }
-        return (int) $result;
-    }
-
     private static function orderByQuality($header)
     {
         $getQ = function($entry) {
@@ -215,17 +224,17 @@ final class headers
         return current($result);
     }
 
-    public static function accept( $header, $acceptable )
-    {
-        if ( is_string($header) ) {
-            $header = \arc\http\headers::parseHeader( $header );
+    /**
+     * Return the last value sent for a specific header, uses the output of parse().
+     * @param (mixed) $headers An array with multiple header strings or a single string.
+     * @return array|mixed
+     */
+    private static function getLastHeader($headers) {
+        if ( is_array($headers) ) {
+            return end($headers);
         }
-        $ordered = self::orderByQuality($header);
-        foreach( $ordered as $value ) {
-            if ( self::isAcceptable($value['value'], $acceptable) ) {
-                return $value['value'];
-            }
-        }
+        return $headers;
     }
+
 
 }
