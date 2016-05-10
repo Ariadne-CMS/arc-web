@@ -209,7 +209,7 @@ final class headers
             if ( $name[ strlen($name)-1 ] == '*' || $name[0] == '*' ) {
                 $q -= 0.0001; // exact matches are preferred over wildcards
             }
-            return $q;            
+            return $q;
         };
         usort($header, function($a,$b) use ($getQ) {
             return ($getQ($a)>$getQ($b) ? -1 : 1);
@@ -217,10 +217,16 @@ final class headers
         return $header;
     }
 
+    private static function pregEscape($string) {
+        $special = ".\\+'?[^]$(){}=!<>|:";
+        // * and - are not included, since they are allowed in the accept mimetypes
+        return AddCSlashes($string, $special);
+   }
+
     private static function isAcceptable($name, $acceptable)
     {
         $name = str_replace('*', '.*', $name);
-        $result = preg_grep('|'.$name.'|', $acceptable);
+        $result = preg_grep('|'.self::pregEscape($name).'|', $acceptable);
         return current($result);
     }
 

@@ -111,10 +111,9 @@ class ClientStream implements Client
 
     public function __call( $name, $args )
     {
-        if ( $this->verbs[strtoupper($name)] ) {
-            $url     = array_shift($args);
-            $request = array_shift($args);
-            $options = array_shift($args);
+        $name = strtoupper($name);
+        if ( isset($this->verbs[$name]) && $this->verbs[$name] ) {
+            @list($url, $request, $options) = $args;
             return $this->request( strtoupper($name), $url, $request, $options );
         } else {
             throw new \arc\MethodNotFound("'$name' is not a valid http client method", \arc\exceptions::OBJECT_NOT_FOUND );
