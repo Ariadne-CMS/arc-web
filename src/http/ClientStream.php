@@ -18,11 +18,30 @@ namespace arc\http;
  */
 class ClientStream implements Client
 {
-    private $options        = ['headers' => []];
+    private $options = [
+        'headers'          => [],
+        'timeout'          => 5,
+        'ignore_errors'    => true,
+        'protocol_version' => 1.1
+    ];
 
+    /**
+     */
     public $responseHeaders = null;
+    /**
+     */
     public $requestHeaders  = null;
-
+    /**
+     */
+    public $verbs           = [
+        'GET'     => true,
+        'POST'    => true,
+        'PUT'     => true,
+        'DELETE'  => true,
+        'OPTIONS' => true,
+        'HEAD'    => true,
+        'TRACE'   => true
+    ];
     /**
      * Merges header string and headers array to single string with all headers
      * @return string
@@ -60,11 +79,10 @@ class ClientStream implements Client
             $url->query->import( $request);
             $request = null;
         }
-
         $options = [
             'method'  => $type,
             'content' => $request
-        ] + $options;
+        ] + (array) $options;
 
         $options['headers'] = $this->mergeHeaders(
             \arc\hash::get('header', $this->options),
@@ -91,52 +109,15 @@ class ClientStream implements Client
         $this->options = $options;
     }
 
-    /**
-     * Send a GET request
-     * @param string         $url     The URL to request
-     * @param array|string   $request The query string
-     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
-     * @return string
-     */
-    public function get( $url, $request = null, $options = [] )
+    public function __call( $name, $args )
     {
-        return $this->request( 'GET', $url, $request, $options );
-    }
-
-    /**
-     * Send a POST request
-     * @param string         $url     The URL to request
-     * @param array|string   $request The query string
-     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
-     * @return string
-     */
-    public function post( $url, $request = null, $options = [] )
-    {
-        return $this->request( 'POST', $url, $request, $options );
-    }
-
-    /**
-     * Send a PUT request
-     * @param string         $url     The URL to request
-     * @param array|string   $request The query string
-     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
-     * @return string
-     */
-    public function put( $url, $request = null, $options = [] )
-    {
-        return $this->request( 'PUT', $url, $request, $options );
-    }
-
-    /**
-     * Send a DELETE request
-     * @param string         $url     The URL to request
-     * @param array|string   $request The query string
-     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
-     * @return string
-     */
-    public function delete( $url, $request = null, $options = [] )
-    {
-        return $this->request( 'DELETE', $url, $request, $options );
+        $name = strtoupper($name);
+        if ( isset($this->verbs[$name]) && $this->verbs[$name] ) {
+            @list($url, $request, $options) = $args;
+            return $this->request( $name, $url, $request, $options );
+        } else {
+            throw new \arc\MethodNotFound("'$name' is not a valid http client method", \arc\exceptions::OBJECT_NOT_FOUND );
+        }
     }
 
 
