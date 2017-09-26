@@ -109,4 +109,59 @@
             $this->assertEquals( $commonUrls, $parsedUrls);
         }
 
+      function testEvilURL1()
+      {
+         $evilURL = 'http://127.0.0.1:11211:80/';
+         $parsed = \arc\url::url($evilURL);
+         $this->assertEquals( $parsed->port, 80 );
+         $parsedSafe = \arc\url::safeUrl($evilURL);
+         $this->assertEquals( $parsedSafe->port, 80 );
+         $safeURL = (string) $parsed;
+         $this->assertEquals( 'http://127.0.0.1:80/', $safeURL);
+      }
+
+      function testEvilURL2()
+      {
+         $evilURL = 'http://google.com#@evil.com/';
+         $parsed = \arc\url::url($evilURL);
+         $this->assertEquals( $parsed->host, 'google.com' );
+         $parsedSafe = \arc\url::safeUrl($evilURL);
+         $this->assertEquals( $parsedSafe->host, 'google.com');
+         $safeURL = (string) $parsed;
+         $this->assertEquals( 'http://google.com#%40evil.com%2F', $safeURL);
+      }
+
+      function testEvilURL3()
+      {
+         $evilURL = 'http://foo@evil.com:80@google.com/';
+         $parsed = \arc\url::url($evilURL);
+         $this->assertEquals( $parsed->host, 'google.com' );
+         $parsedSafe = \arc\url::safeUrl($evilURL);
+         $this->assertEquals( $parsedSafe->host, 'google.com');
+         $safeURL = (string) $parsed;
+         $this->assertEquals( 'http://foo%40evil.com:80@google.com/', $safeURL);
+      }
+
+      function testEvilURL4()
+      {
+         $evilURL = 'http://foo@127.0.0.1 @google.com/';
+         $parsed = \arc\url::url($evilURL);
+         $this->assertEquals( $parsed->host, 'google.com' );
+         $parsedSafe = \arc\url::safeUrl($evilURL);
+         $this->assertEquals( $parsedSafe->host, 'google.com');
+         $safeURL = (string) $parsed;
+         $this->assertEquals( 'http://foo%40127.0.0.1%20@google.com/', $safeURL);
+      }
+
+      function testEvilURL5()
+      {
+         $evilURL = 'http://127.0.0.1:11211#@google.com:80/';
+         $parsed = \arc\url::url($evilURL);
+         $this->assertEquals( $parsed->host, '127.0.0.1' );
+         $parsedSafe = \arc\url::safeUrl($evilURL);
+         $this->assertEquals( $parsedSafe->host, '127.0.0.1');
+         $safeURL = (string) $parsed;
+         $this->assertEquals( 'http://127.0.0.1:11211#%40google.com%3A80%2F', $safeURL);
+      }
+
     }
