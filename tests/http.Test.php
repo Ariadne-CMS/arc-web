@@ -9,7 +9,7 @@
      * file that was distributed with this source code.
      */
 
-    class TestHTTP extends PHPUnit_Framework_TestCase
+    class TestHTTP extends PHPUnit\Framework\TestCase
     {
 
         function testGet()

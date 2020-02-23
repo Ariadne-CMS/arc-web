@@ -11,7 +11,7 @@
      */
 
 
-    class TestUrl extends PHPUnit_Framework_TestCase
+    class TestUrl extends PHPUnit\Framework\TestCase
     {
         function testSafeUrl()
         {

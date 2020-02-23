@@ -10,7 +10,7 @@
      */
 
 
-    class TestUrlQuery extends PHPUnit_Framework_TestCase
+    class TestUrlQuery extends PHPUnit\Framework\TestCase
     {
         function testparsePHPUrl()
         {

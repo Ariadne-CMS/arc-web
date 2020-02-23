@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-class TestHTTP_clientStream extends PHPUnit_Framework_TestCase
+class TestHTTP_clientStream extends PHPUnit\Framework\TestCase
 {
     function testCreateInstance()
     {
