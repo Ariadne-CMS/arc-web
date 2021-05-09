@@ -92,12 +92,12 @@ class ServerRequest
 		return [false, ''];
 	}
 
-	private static function getUser()
+	private function getUser()
 	{
 		$checks = [ 
 			'PHP_AUTH_USER'               => false, 
 			'REMOTE_USER'                 => false, 
-			'HTTP_AUTHORIZATION'          => function($v) { list($user,$password)=http::parseAuthUser($v); return $user; },
+			'HTTP_AUTHORIZATION'          => function($v) { list($user,$password)=$this->parseAuthUser($v); return $user; },
 		];
 		list($header, $headerValue) = $this->getHeader($checks, 3);
 		if (isset($checks[$header]) && is_callable($checks[$header])) {
@@ -106,11 +106,11 @@ class ServerRequest
 		return $headerValue;
 	}
 
-	private static function getPassword()
+	private function getPassword()
 	{
 		$checks = [ 
 			'PHP_AUTH_PW'                 => false, 
-			'HTTP_AUTHORIZATION'          => function($v) { list($user,$password)=http::parseAuthUser($v); return $password; },
+			'HTTP_AUTHORIZATION'          => function($v) { list($user,$password)=$this->parseAuthUser($v); return $password; },
 		];
 		list($header, $headerValue) = $this->getHeader($checks, 3);
 		if (isset($checks[$header]) && is_callable($checks[$header])) {
@@ -119,7 +119,7 @@ class ServerRequest
 		return $headerValue;
 	}
 
-	private static function parseAuthUser($auth) {
+	private function parseAuthUser($auth) {
 		return explode(':',base64_decode(substr($auth, 6)));
 	}
 
