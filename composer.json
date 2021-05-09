@@ -13,7 +13,8 @@
 	],
 	"require": {
 		"php": ">=7.3",
-		"arc/base": "~3.0"
+		"arc/base": "~3.0",
+		"ralouphie/getallheaders": "^3.0"
 	},
 	"autoload": {
 		"psr-4": {
