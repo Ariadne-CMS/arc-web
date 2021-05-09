@@ -12,10 +12,24 @@ namespace ac\http;
 /**
  * Class ServerRequest
  * Implements a simple container to retrieve information from the http server request
+ * It doesn't load or parse anything, unless you access one of the defined properties
+ * and then it only loads/parses what you need
  *
  * Usage:
  *   $request = \arc\http::serverRequest();
  *   echo $request->url;
+ *
+ * Note: this class doesn't implement Psr7/Psr15. You can easily convert it if you
+ * need to. e.g.
+ *   $psr7request = \Nyholm\Psr7\ServerRequest(
+ *       $request->method,
+ *       $request->url,
+ *       $request->headers,
+ *       $request->body
+ *       explode('.',$request->protocol)[1],
+ *       $_SERVER
+ *   );
+ * But you might as well create a new Psr7 request from the Psr15 factory methods
  *
  * @package arc
  * @property string $protocol The HTTP request protocol
@@ -23,6 +37,8 @@ namespace ac\http;
  * @property \arc\url\Url $url The requested URL 
  * @property array $headers The Headers sent in the request. Note that Apache's REDIRECT_ prefixes aren't parsed, you have to do that yourself.
  * @property string $body The HTTP request body
+ * @property string $params The HTTP post params, if sent
+ * @property string $files The files uploaded with the request, if any
  * @property string $user The user name from HTTP Basic authentication, if specified
  * @property string $password The user password from HTTP Basic authentication, if specified
  */
@@ -51,6 +67,10 @@ class ServerRequest
 				$this->headers = $this->getHeaders();
 				return $this->headers;
 			break;
+			case 'params':
+				$this->params = $this->getParams();
+				return $this->params;
+			break;
 			case 'body':
 				$this->body = $this->getBody();
 				return $this->body;
@@ -62,6 +82,10 @@ class ServerRequest
 			case 'password':
 				$this->password = $this->getPassword();
 				return $this->password;
+			break;
+			case 'files':
+				$this->files = $this->getFiles();
+				return $this->files;
 			break;
 			default:
 				throw new \arc\IllegalRequest('Unknown property '.$name, \arc\exceptions::OBJECT_NOT_FOUND);
@@ -148,5 +172,38 @@ class ServerRequest
 	private function getBody()
 	{
 		return stream_get_contents(STDIN);	
+	}
+
+	private function normalizeFiles($files = [])
+	{
+		$normalized = [];
+		if (is_array($files['tmp_name'])) {
+			foreach($files['tmp_name'] as $key) {
+				$normalized[$key] = [
+					'tmp_name' => $files['tmp_name'][$key],
+					'size'     => $files['size'][$key],
+	                'error'    => $files['error'][$key],
+	                'name'     => $files['name'][$key],
+	                'type'     => $files['type'][$key]
+				];
+			}
+		} else foreach ($files as $key => $value) {
+			if (is_array($value) && isset($value['tmp_name'])) {
+				$normalized[$key] = $value;
+			} else if (is_array($value)) {
+				$normalized[$key] = $this->normalizeFiles($value);
+			}
+		}
+		return $normalized;
+    }
+
+	private function getFiles()
+	{
+		return $this->normalizeFiles($_FILES);
+	}
+
+	private function getParams()
+	{
+		return $_POST;
 	}
 }
