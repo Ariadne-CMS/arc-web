@@ -1,7 +1,28 @@
 arc\http
 ========
 
-This component provides a very basic http client using PHP stream handling.
+This component provides a very basic http client using PHP stream handling, and a simple ServerRequest implementation.
+
+\arc\http::serverRequest
+------------------------
+	(object) \arc\http::serverRequest();
+
+```php
+    $request = \arc\http::serverRequest();
+```
+
+The request object gives access to the following properties:
+- protocol
+- method
+- url
+- headers
+- body
+
+In addition the following methods are provided:
+- \arc\http\ServerRequest::getHeader($headerList, $followRedirects=0)
+- \arc\http\ServerRequest::getUser()
+- \arc\http\ServerRequest::getPassword()
+
 
 \arc\http::get
 --------------------

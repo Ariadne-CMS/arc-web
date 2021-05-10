@@ -19,6 +19,17 @@ namespace arc;
 final class http
 {
     /**
+     * Returns a 
+     */
+    public static function serverRequest()
+    {
+        if (!\arc\context::$serverRequest) {
+            \arc\context::$serverRequest = new http\serverRequest();
+        }
+        return \arc\context::$serverRequest;
+    }
+
+    /**
      * Send a HTTP request with a specific method, GET, POST, etc.
      * @param null  $method The method to use, GET, POST, etc.
      * @param null  $url    The URL to request
