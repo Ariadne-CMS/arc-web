@@ -23,6 +23,20 @@ In addition the following methods are provided:
 - \arc\http\ServerRequest::getUser()
 - \arc\http\ServerRequest::getPassword()
 
+\arc\http::htpasswd
+--------------------
+	(object) \arc\http::htpasswd(string $passwdFileContents)
+
+```php
+	$htpasswd = \arc\http::htpasswd(file_get_contents('.htpasswd'));
+	if ($htpasswd->check($user, $password)) {
+		// user and password are valid
+	}
+```
+This returns a \arc\http\Htpasswd object with the users from the htpasswd file.
+It contains one method: 
+	(bool) \arc\http\Htpasswd::check(string $user, string $password)
+
 
 \arc\http::get
 --------------------
