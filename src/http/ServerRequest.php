@@ -161,7 +161,7 @@ class ServerRequest
 
 	private function getURL()
 	{
-		return \arc\url($_SERVER['REQUEST_URI']);
+		return \arc\url::url($_SERVER['REQUEST_URI']);
 	}
 
 	private function getHeaders()
