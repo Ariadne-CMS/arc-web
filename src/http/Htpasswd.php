@@ -9,10 +9,19 @@
  */
 namespace arc\http;
 
+/**
+ * This class parses a .htpasswd formatted string and extracts the users
+ * and encrypted passwords from it.
+ * Then you can check a username and password combination against this
+ * list.
+ */
 class Htpasswd {
 
     public $users = [];
 
+    /**
+     * The constructor needs a string with the contents of a htpasswd file
+     */
     public function __construct($htpasswd) {
         $lines = preg_split('/\r\n|\r|\n/',$htpasswd);
         foreach ($lines as $line) {
@@ -26,6 +35,13 @@ class Htpasswd {
         }
     }
 
+    /**
+     * This method checks if a username and password combination matches
+     * a user and encrypted password from the htpasswd file.
+     * @param string $user
+     * @param string $password
+     * @return bool
+     */
     public function check($user, $password) {
         if ( !isset($this->users[$user]) ) {
             return false;
