@@ -150,7 +150,7 @@ final class headers
         }
     }
 
-    private static function addHeader($headers, $name, $value)
+    public static function addHeader($headers, $name, $value)
     {
         if ( !isset($headers[ $name]) ) {
             // first entry for this header
