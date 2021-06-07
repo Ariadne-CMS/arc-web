@@ -171,7 +171,7 @@ class ServerRequest
 
 	private function getBody()
 	{
-		return stream_get_contents(STDIN);	
+		return stream_get_contents(fopen('php://input','r'));
 	}
 
 	private function normalizeFiles($files = [])
