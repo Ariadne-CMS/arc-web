@@ -84,7 +84,7 @@ class ClientStream implements Client
             'content' => $request
         ] + (array) $options;
 
-        $options['headers'] = $this->mergeHeaders(
+        $options['header'] = $this->mergeHeaders(
             \arc\hash::get('header', $this->options),
             \arc\hash::get('headers', $this->options),
             \arc\hash::get('header', $options),
@@ -96,7 +96,7 @@ class ClientStream implements Client
         $context = stream_context_create( [ 'http' => $options ] );
         $result  = @file_get_contents( (string) $url, false, $context );
         $this->responseHeaders = isset($http_response_header) ? $http_response_header : null; //magic php variable set by file_get_contents.
-        $this->requestHeaders  = isset($options['headers']) ? explode("\r\n",$options['headers']) : [];
+        $this->requestHeaders  = isset($options['header']) ? explode("\r\n",$options['header']) : [];
 
         return $result;
     }
