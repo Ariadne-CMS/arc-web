@@ -18,6 +18,10 @@ namespace arc\http;
  */
 class ClientStream implements Client
 {
+    public $whitelist = [
+        'http','https'
+    ];
+
     private $options = [
         'headers'          => [],
         'timeout'          => 5,
@@ -75,6 +79,9 @@ class ClientStream implements Client
     public function request( $type, $url, $request = null, $options = [] )
     {
         $url = \arc\url::url( (string) $url);
+        if (!in_array($url->scheme, $this->whitelist)) {
+            throw new \arc\IllegalRequest("Scheme ".$url->scheme." is not allowed", \arc\exceptions::ILLEGAL_ARGUMENT);
+        }
         if ($type == 'GET' && $request) {
             $url->query->import( $request);
             $request = null;
